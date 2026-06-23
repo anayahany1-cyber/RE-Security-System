@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RE-Security System Dashboard - Kelompok 7</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #060814; }
+        .heading-font { font-family: 'Space Grotesk', sans-serif; }
+        
+        /* Animasi Glow & Aliran Data */
+        .glow-emerald { box-shadow: 0 0 20px rgba(16, 185, 129, 0.2); }
+        .glow-red { box-shadow: 0 0 20px rgba(239, 68, 68, 0.2); }
+        
+        /* Animasi partikel data bergerak */
+        @keyframes moveDataNormal {
+            0% { left: 5%; top: 50%; opacity: 1; }
+            25% { left: 28%; top: 50%; }
+            50% { left: 52%; top: 50%; }
+            75% { left: 76%; top: 50%; }
+            100% { left: 92%; top: 50%; opacity: 1; }
+        }
+
+        @keyframes moveDataErad {
+            0% { left: 5%; top: 50%; opacity: 1; }
+            25% { left: 28%; top: 50%; }
+            50% { left: 52%; top: 50%; }
+            70% { left: 52%; top: 15%; opacity: 1; }
+            100% { left: 52%; top: 15%; opacity: 0; transform: scale(0); }
+        }
+
+        .packet-animate-normal { animation: moveDataNormal 9s forwards linear; }
+        .packet-animate-erad { animation: moveDataErad 7s forwards linear; }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-slate-950">
+
+    <nav class="border-b border-slate-800/60 bg-slate-900/30 backdrop-blur-md sticky top-0 z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 text-xl font-bold shadow-md shadow-emerald-500/20">
+                    <i class="fa-solid fa-dna"></i>
+                </div>
+                <div>
+                    <h1 class="heading-font font-bold text-lg tracking-wide text-white">RE-SECURITY SYSTEM</h1>
+                    <p class="text-xs text-slate-400 font-medium">Kelompok 7 • Pendidikan Biologi Universitas Lampung</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 bg-slate-950/80 px-4 py-2 rounded-xl border border-slate-800/80 text-xs font-mono">
+                <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-slate-400 text-[11px]">STATUS OPERASIONAL: <span id="global-status" class="text-emerald-400 font-bold">HOMEOSTASIS</span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8 w-full flex-grow">
+        
+        <section class="lg:col-span-4 space-y-6 flex flex-col">
+            
+            <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl">
+                <div>
+                    <h2 class="heading-font font-bold text-slate-200 text-sm uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-flask text-emerald-400"></i> Generator Aliran Data
+                    </h2>
+                    <p class="text-slate-400 text-xs mt-0.5">Injeksi muatan informasi ke dalam matriks organel siber RE</p>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-mono font-bold text-slate-400 block uppercase">Pilih Konformasi Struktur Data:</label>
+                        <select id="sim-mode" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-3 text-xs focus:outline-none focus:border-emerald-500 text-slate-200 font-medium cursor-pointer">
+                            <option value="normal">🧬 Protein Normal (Lolos QC / Akses Sah)</option>
+                            <option value="misfolded">👾 Protein Cacat / Misfolded (Serangan Injeksi/Malware)</option>
+                        </select>
+                    </div>
+
+                    <button id="btn-start" onclick="startAdvancedSimulation()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-slate-950 font-bold py-3.5 px-4 rounded-xl transition-all text-xs uppercase tracking-wider font-mono shadow-md shadow-emerald-950/50 cursor-pointer flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-play"></i> Injeksi Paket & Jalankan Aksi
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 shadow-xl flex-grow flex flex-col justify-between">
+                <div>
+                    <h3 class="heading-font font-bold text-slate-200 text-xs uppercase tracking-wider flex items-center gap-2 border-b border-slate-800/80 pb-3 mb-4">
+                        <i class="fa-solid fa-magnifying-glass text-cyan-400"></i> Analisis Deskriptif Aksi (Bab 3.3)
+                    </h3>
+                    <div id="step-desc" class="text-xs text-slate-400 leading-relaxed space-y-2">
+                        <p class="italic text-center py-8">Menunggu inisiasi aksi... Silakan pilih jenis protein data di atas dan klik tombol jalankan untuk melihat pergerakan partikel.</p>
+                    </div>
+                </div>
+                
+                <div id="academic-note" class="mt-4 pt-3 border-t border-slate-800/60 text-[10px] text-slate-500 font-mono hidden">
+                    *Mekanisme diadaptasi dari Bab III sub-bab Desain Sistem Keamanan Jaringan Berlapis.
+                </div>
+            </div>
+        </section>
+
+        <section class="lg:col-span-8 flex flex-col">
+            <div class="bg-slate-900/20 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between flex-grow shadow-xl relative overflow-hidden bg-gradient-to-b from-slate-900/40 to-transparent">
+                
+                <div class="border-b border-slate-800/60 pb-3 mb-4 flex justify-between items-center">
+                    <h2 class="heading-font font-bold text-slate-200 text-xs uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-network-wired text-emerald-400"></i> Peta Jalur Aliran Partikel Organel Siber
+                    </h2>
+                    <span id="stage-badge" class="font-mono text-[10px] px-2 py-0.5 rounded border border-slate-700 text-slate-400 bg-slate-950/60">STANDBY</span>
+                </div>
+
+                <div class="w-full h-72 bg-slate-950 rounded-xl border border-slate-900 p-4 relative overflow-hidden flex items-center justify-between my-auto">
+                    
+                    <div class="absolute h-0.5 bg-slate-800/60 left-[10%] right-[10%] top-1/2 -translate-y-1/2 z-0"></div>
+                    <div id="erad-line" class="absolute w-0.5 bg-slate-800/60 left-[52%] top-[25%] bottom-1/2 z-0 hidden"></div>
+
+                    <div id="data-packet" class="absolute h-4 w-4 rounded-full bg-emerald-400 border-2 border-white shadow-lg shadow-emerald-400/50 z-30 opacity-0 flex items-center justify-center transition-transform duration-300"></div>
+
+                    <div id="node-1" class="w-20 text-center z-10 transition-all duration-300 transform">
+                        <div class="h-12 w-12 rounded-xl bg-slate-900 border border-slate-800 mx-auto flex items-center justify-center text-slate-500 text-lg shadow-md mb-2" id="node-box-1">
+                            <i class="fa-solid fa-id-card"></i>
+                        </div>
+                        <div class="text-[10px] font-bold text-slate-400">Stage 1</div>
+                        <div class="text-[9px] text-slate-500 font-mono mt-0.5">Input Recog.</div>
+                    </div>
+
+                    <div id="node-2" class="w-20 text-center z-10 transition-all duration-300 transform">
+                        <div class="h-12 w-12 rounded-xl bg-slate-900 border border-slate-800 mx-auto flex items-center justify-center text-slate-500 text-lg shadow-md mb-2" id="node-box-2">
+                            <i class="fa-solid fa-clipboard-check"></i>
+                        </div>
+                        <div class="text-[10px] font-bold text-slate-400">Stage 2</div>
+                        <div class="text-[9px] text-slate-500 font-mono mt-0.5">Selective QC</div>
+                    </div>
+
+                    <div id="node-erad" class="absolute left-[52%] top-6 -translate-x-1/2 text-center z-20 opacity-30 transform scale-90 transition-all duration-300">
+                        <div class="h-12 w-12 rounded-xl bg-slate-900 border border-slate-800 mx-auto flex items-center justify-center text-slate-500 text-lg shadow-md mb-1" id="node-box-erad">
+                            <i class="fa-solid fa-dumpster-fire"></i>
+                        </div>
+                        <div class="text-[9px] font-bold text-red-400 font-mono uppercase tracking-wider">Jalur ERAD</div>
+                    </div>
+
+                    <div id="node-3" class="w-20 text-center z-10 transition-all duration-300 transform">
+                        <div class="h-12 w-12 rounded-xl bg-slate-900 border border-slate-800 mx-auto flex items-center justify-center text-slate-500 text-lg shadow-md mb-2" id="node-box-3">
+                            <i class="fa-solid fa-truck-ramp-box"></i>
+                        </div>
+                        <div class="text-[10px] font-bold text-slate-400">Stage 3</div>
+                        <div class="text-[9px] text-slate-500 font-mono mt-0.5">Controlled Dist</div>
+                    </div>
+
+                    <div id="node-4" class="w-20 text-center z-10 transition-all duration-300 transform">
+                        <div class="h-12 w-12 rounded-xl bg-slate-900 border border-slate-800 mx-auto flex items-center justify-center text-slate-500 text-lg shadow-md mb-2" id="node-box-4">
+                            <i class="fa-solid fa-eye"></i>
+                        </div>
+                        <div class="text-[10px] font-bold text-slate-400">Stage 4</div>
+                        <div class="text-[9px] text-slate-500 font-mono mt-0.5">Adaptive Surv</div>
+                    </div>
+
+                </div>
+
+                <div class="mt-4">
+                    <div class="bg-slate-950 px-4 py-2 border-t border-x border-slate-800 rounded-t-xl font-mono text-[9px] text-slate-500 flex justify-between">
+                        <span><i class="fa-solid fa-terminal mr-1"></i> MONITORING JALUR RETIKULUM ENDOPLASMA SIBER</span>
+                        <span id="log-badge" class="font-bold">STANDBY</span>
+                    </div>
+                    <div id="terminal-log" class="bg-slate-950/90 border border-slate-800 rounded-b-xl p-3 font-mono text-xs text-slate-400 h-28 overflow-y-auto space-y-1 shadow-inner">
+                        <div class="text-slate-600">// Menunggu pemicu tindakan aliran paket...</div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-slate-900 bg-slate-950/80 py-4 px-6 text-center text-[10px] font-mono text-slate-600">
+        RE-Security System Prototipe Makalah Kelompok 7 © 2026 Jurusan MIPA - FKIP Universitas Lampung.
+    </footer>
+
+    <script>
+        const dataPacket = document.getElementById('data-packet');
+        const btnStart = document.getElementById('btn-start');
+        const modeSelect = document.getElementById('sim-mode');
+        const stepDesc = document.getElementById('step-desc');
+        const terminalLog = document.getElementById('terminal-log');
+        const globalStatus = document.getElementById('global-status');
+        const stageBadge = document.getElementById('stage-badge');
+        const logBadge = document.getElementById('log-badge');
+        const eradLine = document.getElementById('erad-line');
+
+        const textTeori = {
+            "1": "<strong>[STAGE 1: INPUT RECOGNITION STAGE]</strong><br><br>Paket data digital tiba di gerbang luar perimeter siber. Tahap ini meniru fungsi membran pembatas luar Retikulum Endoplasma dan kompleks ribosom saat mengenali untaian rantai peptida.<br><br>Sistem siber langsung memeriksa sertifikasi kunci data pengirim serta validitas token asal sebelum mengizinkan paket informasi tersebut masuk lebih jauh ke dalam ruang sistem.",
+            "2_norm": "<strong>[STAGE 2: SELECTIVE PROCESSING STAGE - VALID]</strong><br><br>Partikel data kini memasuki zona pemeriksaan kualitas (Quality Control) ketat. Mengadopsi mekanisme protein pendamping sperti Chaperone di dalam lumen RE Kasar.<br><br>Sistem memindai bentuk konfigurasi data. Karena data ini berstruktur normal (sesuai regulasi keamanan), ia diverifikasi sebagai berkas bersih dan diizinkan lanjut ke fase distribusi.",
+            "2_err": "<strong>[STAGE 2: SELECTIVE PROCESSING STAGE - CACAT]</strong><br><br><span class='text-red-400 font-bold'>ANOMALI EROR TERDETEKSI!</span> Struktur data kedapatan cacat, manipulatif, atau tidak lazim (meniru kondisi <em>misfolded protein</em> dalam organel sel).<br><br>Sistem mendiagnosis muatan ini sebagai aktivitas peretasan berbahaya, malware, atau eksploitasi injeksi siber yang berpotensi merusak integritas pangkalan data internal.",
+            "3_norm": "<strong>[STAGE 3: CONTROLLED DISTRIBUTION STAGE - LOGISTIK]</strong><br><br>Paket informasi didistribusikan secara aman melalui jalur internal terenkripsi yang menyerupai lipatan labirin kantung Lumen Retikulum Endoplasma.<br><br>Karena telah lolos QC pada tahap sebelumnya, data ditransmisikan menuju alamat tujuannya secara rapi dan terlindung dari intervensi ataupun kebocoran lateral.",
+            "3_err": "<strong>[STAGE 3: CONTROLLED DISTRIBUTION STAGE - AMBLES ERAD]</strong><br><br><span class='text-red-400 font-bold'>AKTIVASI DARURAT PROTOKOL ERAD!</span> Berdasarkan cetak biru makalah Bab 3.3, mekanisme <em>Endoplasmic Reticulum-Associated Degradation</em> langsung mengambil alih.<br><br>Jalur akses logistik data normal ditutup seketika. Berkas berbahaya tersebut dialihkan paksa, ditarik keluar dari sirkulasi utama, dimasukkan ke ruang karantina isolasi digital, dan dihancurkan total agar tidak menginfeksi komponen server lainnya.",
+            "4_norm": "<strong>[STAGE 4: ADAPTIVE SURVEILLANCE STAGE - SELESAI]</strong><br><br>Fase akhir pengawasan sirkular adaptif yang berkesinambungan, mencerminkan hubungan timbal balik fleksibel organel RE dengan inti sel (nukleus).<br><br>Paket informasi sukses mendarat dengan aman, integritas log tercatat penuh di pusat kendali, dan ekosistem jaringan siber dikembalikan seutuhnya ke status stabil seimbang (<strong>Homeostasis</strong>)."
+        };
+
+        function writeLog(msg, color = 'text-slate-400') {
+            const el = document.createElement('div');
+            el.className = `${color} transition-all duration-150`;
+            el.innerHTML = `&gt; ${msg}`;
+            terminalLog.appendChild(el);
+            terminalLog.scrollTop = terminalLog.scrollHeight;
+        }
+
+        function highlightNode(nodeNum, styleClass, iconClass, statusText) {
+            const box = document.getElementById(`node-box-${nodeNum}`);
+            const title = document.getElementById(`vis-title-${nodeNum}`);
+            const stat = document.getElementById(`vis-status-${nodeNum}`);
+            const icon = box.querySelector('i');
+
+            box.className = `h-12 w-12 rounded-xl mx-auto flex items-center justify-center text-lg shadow-md mb-2 ${styleClass}`;
+            icon.className = `fa-solid ${iconClass}`;
+            if(title) title.className = `text-xs font-mono font-bold mb-1 ${styleClass.includes('emerald') || styleClass.includes('teal') ? 'text-teal-400' : styleClass.includes('red') ? 'text-red-400' : 'text-slate-500'}`;
+            if(stat) {
+                stat.innerText = statusText;
+                stat.className = `text-[9px] font-mono mt-0.5 font-bold ${styleClass.includes('emerald') || styleClass.includes('teal') ? 'text-teal-400' : styleClass.includes('red') ? 'text-red-400' : 'text-slate-500'}`;
+            }
+        }
+
+        function clearAllNodes() {
+            highlightNode('1', 'bg-slate-900 border-slate-800 text-slate-500', 'fa-id-card', 'STANDBY');
+            highlightNode('2', 'bg-slate-900 border-slate-800 text-slate-500', 'fa-clipboard-check', 'STANDBY');
+            highlightNode('3', 'bg-slate-900 border-slate-800 text-slate-500', 'fa-truck-ramp-box', 'STANDBY');
+            highlightNode('4', 'bg-slate-900 border-slate-800 text-slate-500', 'fa-eye', 'STANDBY');
+            highlightNode('erad', 'bg-slate-900 border-slate-800 text-slate-500', 'fa-dumpster-fire', 'STANDBY');
+            document.getElementById('node-erad').className = "absolute left-[52%] top-6 -translate-x-1/2 text-center z-20 opacity-30 transform scale-90 transition-all duration-300";
+            eradLine.classList.add('hidden');
+        }
+
+        function startAdvancedSimulation() {
+            const mode = modeSelect.value;
+            
+            // Lock UI Kontrol
+            btnStart.disabled = true;
+            btnStart.className = "w-full bg-slate-800 text-slate-500 font-bold py-3.5 px-4 rounded-xl cursor-not-allowed text-xs uppercase tracking-wider font-mono";
+            
+            // Reset state visual awal
+            terminalLog.innerHTML = '';
+            clearAllNodes();
+            dataPacket.className = "absolute h-4 w-4 rounded-full bg-emerald-400 border-2 border-white shadow-lg shadow-emerald-400/50 z-30 opacity-0";
+            
+            document.getElementById('academic-note').classList.remove('hidden');
+            
+            globalStatus.innerText = "PROCESSING PACKET";
+            globalStatus.className = "text-amber-400 font-bold";
+            logBadge.innerText = "RUNNING";
+            logBadge.className = "text-amber-400 font-bold animate-pulse";
+            
+            // Memicu reflow paksa agar animasi bisa direset ulang
+            void dataPacket.offsetWidth;
+            
+            // Munculkan partikel data di titik awal koordinat kiri kanvas
+            dataPacket.className = "absolute h-4 w-4 rounded-full bg-teal-400 border-2 border-white shadow-lg shadow-teal-400/50 z-30 opacity-100 transition-transform duration-300";
+            dataPacket.style.transform = "scale(1)";
+            
+            if(mode === 'normal') {
+                dataPacket.classList.add('packet-animate-normal');
+            } else {
+                dataPacket.classList.add('packet-animate-erad');
+                eradLine.classList.remove('hidden');
+            }
+
+            writeLog("Menginisiasi aliran partikel informasi molekuler data ke peladen...", "text-slate-400 font-semibold");
+
+            // --- TIMELINE JALANNYA PARTIKEL DATA NYATA ---
+            
+            // STAGE 1 (Detik 0.6)
+            setTimeout(() => {
+                stageBadge.innerText = "STAGE 01";
+                highlightNode('1', 'bg-teal-950/40 border-teal-500 text-teal-400 shadow-lg shadow-teal-950', 'fa-id-card animate-pulse', 'IDENTIFYING');
+                stepDesc.innerHTML = textTeori["1"];
+                writeLog("[STAGE 1] Membaca token akses masuk pengirim data digital.", "text-teal-400");
+            }, 600);
+
+            // STAGE 2 (Detik 2.7)
+            setTimeout(() => {
+                highlightNode('1', 'bg-slate-900 border-slate-800 text-slate-600', 'fa-id-card', 'PASSED');
+                stageBadge.innerText = "STAGE 02";
+                
+                if(mode === 'normal') {
+                    highlightNode('2', 'bg-teal-950/40 border-teal-500 text-teal-400 shadow-lg shadow-teal-950', 'fa-clipboard-check animate-pulse', 'QC CHECKING');
+                    stepDesc.innerHTML = textTeori["2_norm"];
+                    writeLog("[STAGE 2] Memeriksa kualitas konformasi biner berkas. Hasil: Bersih.", "text-teal-400");
+                } else {
+                    dataPacket.className = "absolute h-4 w-4 rounded-full bg-red-500 border-2 border-white shadow-lg shadow-red-500/50 z-30 opacity-100";
+                    highlightNode('2', 'bg-red-950/40 border-red-500 text-red-400 shadow-lg shadow-red-950', 'fa-triangle-exclamation animate-bounce', 'MISFOLDED');
+                    stepDesc.innerHTML = textTeori["2_err"];
+                    writeLog("[STAGE 2 - DETEKSI ANOMALI] Bentuk kode cacat terdeteksi! Mengaktifkan alarm stres siber RE!", "text-red-400 font-bold");
+                }
+            }, 2700);
+
+            // STAGE 3 (Detik 4.9)
+            setTimeout(() => {
+                highlightNode('2', 'bg-slate-900 border-slate-800 text-slate-600', 'fa-clipboard-check', 'DONE');
+                stageBadge.innerText = "STAGE 03";
+                
+                if(mode === 'normal') {
+                    highlightNode('3', 'bg-emerald-950/40 border-emerald-500 text-emerald-400 shadow-lg shadow-emerald-950', 'fa-truck-ramp-box', 'SHIPPING');
+                    stepDesc.innerHTML = textTeori["3_norm"];
+                    writeLog("[STAGE 3] Mengirimkan paket aman melewati saluran terenkripsi Lumen RE.", "text-emerald-400");
+                } else {
+                    document.getElementById('node-erad').className = "absolute left-[52%] top-6 -translate-x-1/2 text-center z-20 opacity-100 transform scale-105 transition-all duration-300";
+                    highlightNode('erad', 'bg-red-950/50 border-red-500 text-red-500 shadow-xl shadow-red-950', 'fa-dumpster-fire animate-pulse', 'DESTROYING');
+                    stepDesc.innerHTML = textTeori["3_err"];
+                    writeLog("[STAGE 3 - PENANGANAN ERAD] Mengisolasi berkas penyerang ke ruang karantina biner.", "text-red-500 font-bold");
+                }
+            }, 4900);
+
+            // STAGE 4 (Detik 7.2)
+            setTimeout(() => {
+                stageBadge.innerText = "STAGE 04";
+                
+                if(mode === 'normal') {
+                    highlightNode('3', 'bg-slate-900 border-slate-800 text-slate-600', 'fa-truck-ramp-box', 'DELIVERED');
+                    highlightNode('4', 'bg-emerald-950/40 border-emerald-500 text-emerald-400 shadow-lg shadow-emerald-950', 'fa-eye animate-pulse', 'MONITORING');
+                    stepDesc.innerHTML = textTeori["4_norm"];
+                    writeLog("[STAGE 4] Paket berhasil berlabuh di nukleus inti. Status kembali stabil penuh.", "text-emerald-400");
+                    
+                    setTimeout(() => {
+                        globalStatus.innerText = "HOMEOSTASIS";
+                        globalStatus.className = "text-emerald-400 font-bold";
+                        logBadge.innerText = "STANDBY";
+                        logBadge.className = "";
+                        highlightNode('4', 'bg-slate-900 border-emerald-500 text-emerald-400', 'fa-eye', 'HOMEOSTASIS');
+                        dataPacket.style.transform = "scale(0)";
+                        dataPacket.className = "absolute h-4 w-4 rounded-full bg-emerald-400 opacity-0 z-30";
+                        btnStart.disabled = false;
+                        btnStart.className = "w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-slate-950 font-bold py-3.5 px-4 rounded-xl transition-all text-xs uppercase tracking-wider font-mono shadow-md shadow-emerald-950/50 cursor-pointer flex items-center justify-center gap-2";
+                    }, 1500);
+                } else {
+                    highlightNode('erad', 'bg-slate-900 border-slate-800 text-slate-600', 'fa-dumpster-fire', 'CLEANED');
+                    writeLog("[SUKSES ELEMINASI] Berkas malware telah dilarutkan total dari memori seluler server.", "text-emerald-400 font-bold");
+                    writeLog("[ADAPTIVE SURVEILLANCE] Menambal port siber secara otomatis. Status: Stabil.", "text-amber-400");
+                    
+                    setTimeout(() => {
+                        globalStatus.innerText = "HOMEOSTASIS";
+                        globalStatus.className = "text-emerald-400 font-bold";
+                        logBadge.innerText = "STANDBY";
+                        logBadge.className = "";
+                        highlightNode('4', 'bg-slate-900 border-emerald-500 text-emerald-400', 'fa-eye', 'HOMEOSTASIS');
+                        btnStart.disabled = false;
+                        btnStart.className = "w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-slate-950 font-bold py-3.5 px-4 rounded-xl transition-all text-xs uppercase tracking-wider font-mono shadow-md shadow-emerald-950/50 cursor-pointer flex items-center justify-center gap-2";
+                    }, 1500);
+                }
+            }, 7200);
+        }
+    </script>
+</body>
+</html>
